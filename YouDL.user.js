@@ -2,8 +2,8 @@
 // @name YouDL
 // @description YouDL companion.
 // @author Desmodus
-// @version 1.0
-// @date 2021-10-10
+// @version 1.1
+// @date 2022-07-18
 // @namespace   https://github.com/Ardanay/YouDL
 // @homepageURL https://github.com/Ardanay/YouDL
 // @downloadURL https://github.com/Ardanay/YouDL
@@ -31,7 +31,7 @@
 				AddYouDLButton(
 					'v' + currentURL,
 					'YouDL_V',
-					'[id=subscribe-button][class*=ytd-video-secondary-info-renderer]',
+					'#subscribe-button > ytd-subscribe-button-renderer',
 					'none'
 				);
 			}
@@ -43,7 +43,7 @@
 					AddYouDLButton(
 						'vp' + currentURL,
 						'YouDL_VP',
-						'[id=playlist-action-menu][class*=ytd-playlist-panel-renderer]',
+						'#playlist-action-menu > ytd-menu-renderer',
 						null
 					);
 				}
@@ -57,7 +57,7 @@
 				AddYouDLButton(
 					'vp' + currentURL,
 					'YouDL_P',
-					'[id=menu][class*=ytd-playlist-sidebar-primary-info-renderer]',
+					'#menu > ytd-menu-renderer.ytd-playlist-sidebar-primary-info-renderer',
 					null
 				);
 			}
@@ -68,20 +68,20 @@
 		return document.getElementById(id) !== null;
 	}
 
-	function AddYouDLButton(url, id, parentSelector, display) {
+	function AddYouDLButton(url, id, nodeSelector, display) {
 		let button = createButton(url, id, display);
-		let section = document.querySelector(parentSelector);
+		let section = document.querySelector(nodeSelector);
 		if (section) {
-			section.firstChild.insertBefore(
+			section.insertBefore(
 				button,
-				section.firstChild.firstChild
+				section.firstChild
 			);
 		}
 	}
 
 	function showButton() {
-		let buttonStyle = document.getElementById('YouDL_V').style
-		if (document.querySelector('[class^=ytp-live-badge]')?.attributes.disabled.value === 'true') {
+		let buttonStyle = document.getElementById('YouDL_V')?.style
+		if (document.querySelector('[class^=ytp-live-badge]')?.attributes.disabled?.value === 'true') {
 			buttonStyle.display = null;
 		} else {
 			buttonStyle.display = 'none';
@@ -96,20 +96,20 @@
 		button.innerHTML = '&#129095;';
 
 		container.id = id;
-		container.style.margin = '4px 8px';
-		container.style.display = display;
 
-		button.style.cursor = 'pointer';
-		button.style.backgroundColor = 'transparent';
-		button.style.color = 'var(--yt-spec-icon-inactive)';
-		button.style.border = '0';
-		button.style.fontSize = '2.0em';
-		button.style.fontFamily = 'inherit';
-		button.style.textAlign = 'center';
-		button.style.textDecoration = 'underline';
 		button.href = url;
 		button.title = 'YouDL';
 		button.target = '_blank';
+
+		container.setAttribute('style', `
+			margin: 4px 8px;
+			display: ${display};
+		`);
+		button.setAttribute('style', `
+			color: var(--yt-spec-icon-inactive);
+			font-size: 2.0em;
+			text-align: center;
+		`);
 
 		return container;
 	}
